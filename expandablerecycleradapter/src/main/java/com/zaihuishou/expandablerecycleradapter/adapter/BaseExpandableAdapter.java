@@ -49,19 +49,7 @@ public abstract class BaseExpandableAdapter extends RecyclerView.Adapter impleme
      */
     private void checkDefaultExpand() {
         ArrayMap<Object, List<?>> childArrayMap = new ArrayMap<>();
-        Iterator<Object> iterator = mDataList.iterator();
-        while (iterator.hasNext()) {
-            Object next = iterator.next();
-            if (next instanceof ExpandableListItem) {
-                ExpandableListItem expandableListItem = (ExpandableListItem) next;
-                if (expandableListItem.isExpanded()) {
-                    List<?> childItemList = expandableListItem.getChildItemList();
-                    if (childItemList != null && !childItemList.isEmpty()) {
-                        childArrayMap.put(next, childItemList);
-                    }
-                }
-            }
-        }
+        putChildItemList2Map(mDataList,childArrayMap);
         int size = childArrayMap.size();
         if (size == 0) return;
         for (int i = 0; i < size; i++) {
@@ -71,6 +59,23 @@ public abstract class BaseExpandableAdapter extends RecyclerView.Adapter impleme
             mDataList.addAll(indexOf + 1, objects);
         }
 
+    }
+
+    private <T> void putChildItemList2Map(List<T> mDataList,ArrayMap<Object, List<?>> childArrayMap) {
+        Iterator<T> iterator = mDataList.iterator();
+        while (iterator.hasNext()) {
+            Object next = iterator.next();
+            if (next instanceof ExpandableListItem) {
+                ExpandableListItem expandableListItem = (ExpandableListItem) next;
+                if (expandableListItem.isExpanded()) {
+                    List<?> childItemList = expandableListItem.getChildItemList();
+                    if (childItemList != null && !childItemList.isEmpty()) {
+                        childArrayMap.put(next, childItemList);
+                        putChildItemList2Map(childItemList,childArrayMap);
+                    }
+                }
+            }
+        }
     }
 
     @Override

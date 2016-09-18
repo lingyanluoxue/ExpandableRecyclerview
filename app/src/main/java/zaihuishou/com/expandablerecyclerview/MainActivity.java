@@ -151,6 +151,7 @@ public class MainActivity extends AppCompatActivity {
                     employeeList.add(employee);
                 }
                 department.mEmployees = employeeList;
+                department.setExpanded(isExpandDefault);
             }
             departments.add(department);
         }
